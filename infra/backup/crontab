@@ -1,0 +1,3 @@
+# nightly backup at 02:00 Asia/Karachi; restore verification on the 1st of each month at 04:00
+0 2 * * * /opt/backup.sh >> /proc/1/fd/1 2>&1
+0 4 1 * * /opt/verify-restore.sh >> /proc/1/fd/1 2>&1

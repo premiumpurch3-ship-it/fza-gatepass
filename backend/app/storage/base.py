@@ -1,0 +1,23 @@
+"""Storage abstraction. Business code only talks to this interface; LocalStorage (dev/test) and S3Storage (MinIO / AWS S3 / any
+S3-compatible provider) implement it. Credentials never leave the backend; clients only receive short-lived presigned URLs."""
+from abc import ABC, abstractmethod
+from typing import Iterator
+
+
+class StorageBackend(ABC):
+    @abstractmethod
+    def presign_put(self, key: str, content_type: str, max_bytes: int, expires: int = 900) -> dict: ...
+    @abstractmethod
+    def presign_get(self, key: str, filename: str, content_type: str, inline: bool, expires: int = 60) -> str: ...
+    @abstractmethod
+    def head(self, key: str) -> dict | None: ...
+    @abstractmethod
+    def get_range(self, key: str, start: int, end: int) -> bytes: ...
+    @abstractmethod
+    def iter_bytes(self, key: str, chunk: int = 1024 * 1024) -> Iterator[bytes]: ...
+    @abstractmethod
+    def put_bytes(self, key: str, data: bytes, content_type: str) -> None: ...
+    @abstractmethod
+    def delete(self, key: str) -> None: ...
+    def read_all(self, key: str) -> bytes:
+        return b"".join(self.iter_bytes(key))

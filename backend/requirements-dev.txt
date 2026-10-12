@@ -1,0 +1,10 @@
+-r requirements.txt
+pytest
+httpx
+pypdf
+moto[server,s3]
+flask
+flask-cors
+requests
+pyotp
+playwright==1.56.0
